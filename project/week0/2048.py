@@ -201,25 +201,14 @@ def strategy_best(cookies, cps, time_left, build_info):
     """
     return the best item
     """
-    index = 0
-    item_be = None
-    while item_be == None and index < len(build_info.build_items()):
-        if time_to_wait(cookies, cps, build_info.get_cost(build_info.build_items()[index])) <= time_left:
-            item_be = build_info.build_items()[index]
-            break
-        index += 1
-    if item_be == None:
-        return None
-    cps_cost = build_info.get_cps(item_be) / build_info.get_cost(item_be)
-    #expectation_be = (cps + build_info.get_cps(item_be)) * (time_left - time_to_wait(cookies, cps, build_info.get_cost(item_be))) + cps * time_to_wait(cookies, cps, build_info.get_cost(item_be))
+    clicker_state = ClickerState()
+    item_be = build_info.build_items()[0]
+    expectation_be = (cps + build_info.get_cps(item_be)) * (time_left - time_to_wait(cookies, cps, build_info.get_cost(item_be))) + cps * time_to_wait(cookies, cps, build_info.get_cost(item_be))
     for item in build_info.build_items():
-        #expectation = (cps + build_info.get_cps(item)) * (time_left - time_to_wait(cookies, cps, build_info.get_cost(item))) + cps * time_to_wait(cookies, cps, build_info.get_cost(item))
-        #if expectation > expectation_be and clicker_state.time_until(build_info.get_cost(item_be)) < time_left:
-        cps_cost_tmp = build_info.get_cps(item) / build_info.get_cost(item)
-        if cps_cost_tmp > cps_cost and time_to_wait(cookies, cps, build_info.get_cost(item)) < time_left:
+        expectation = (cps + build_info.get_cps(item)) * (time_left - time_to_wait(cookies, cps, build_info.get_cost(item))) + cps * time_to_wait(cookies, cps, build_info.get_cost(item))
+        if expectation > expectation_be and clicker_state.time_until(build_info.get_cost(item_be)) < time_left:
             item_be = item
-            cps_cost = cps_cost_tmp
-            #expectation_be = expectation
+            expectation_be = expectation
     if (time_to_wait(cookies, cps, build_info.get_cost(item_be)) > time_left):
         return None
     else:
@@ -236,9 +225,9 @@ def run_strategy(strategy_name, time, strategy):
 
     # Uncomment out the lines below to see a plot of total cookies vs. time
     # Be sure to allow popups, if you do want to see it
-    history = state.get_history()
-    history = [(item[0], item[3]) for item in history]
-    simpleplot.plot_lines(strategy_name, 1000, 500, 'Time', 'Total Cookies', [history], True)
+    #history = state.get_history()
+    #history = [(item[0], item[3]) for item in history]
+    #simpleplot.plot_lines(strategy_name, 1000, 500, 'Time', 'Total Cookies', [history], True)
 
 def run():
     """
@@ -246,9 +235,8 @@ def run():
     """    
     #run_strategy("Cursor", SIM_TIME, strategy_cursor)
     # Add calls to run_strategy to run additional strategies
-    run_strategy("Cheap", SIM_TIME, strategy_cheap)
+    #run_strategy("Cheap", SIM_TIME, strategy_cheap)
     run_strategy("Expensive", SIM_TIME, strategy_expensive)
     run_strategy("Best", SIM_TIME, strategy_best)
     
 run()
-
