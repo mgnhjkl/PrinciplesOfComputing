@@ -1,7 +1,17 @@
 """
-Provided Code for Tic-Tac-Toe
+Monte Carlo Tic-Tac-Toe Player
 """
 
+
+import poc_ttt_gui
+
+
+# Constants for Monte Carlo simulator
+# Change as desired
+NTRIALS = 10    # Number of trials to run
+MCMATCH = 1.0  # Score for squares played by the machine player
+MCOTHER = 1.0  # Score for squares played by the other player
+    
 import random
 
 # Constants
@@ -182,8 +192,6 @@ def mc_trial(board, player):
     empty = []
     while winner == None:
         empty = board.get_empty_squares()
-        if len(empty) == 0:
-            print board.check_win()
         if len(empty) > 1:
             square_rand = empty[random.randint(0, len(empty) - 1)]
         else:
@@ -201,8 +209,8 @@ def mc_update_scores(scores, board, player):
     else:
         for row in range(board.get_dim()):
             for col in range(board.get_dim()):
-                if board.square(row,col) == player:
-                    if player == board.check_win():
+                if board.square(row,col) != EMPTY:
+                    if board.square(row,col) == board.check_win():
                         scores[row][col] += 1
                     else:
                         scores[row][col] -= 1
@@ -212,7 +220,6 @@ def get_best_move(board, scores):
     """
     Choose the square with the highest score as next move
     """
-    squares = []
     empty = board.get_empty_squares()
     return get_max_square(empty, scores)
 
@@ -226,14 +233,14 @@ def get_max_square(squares, scores):
         if scores[square[0]][square[1]] > score_max:
             square_max = [square[0], square[1]]
             score_max = scores[square[0]][square[1]]
-    return square_max
+    return (square_max[0], square_max[1])
 
 def mc_move(board, player, trials):
     """
     The function should use the Monte Carlo simulation described above to return a move for the machine player in the form of a (row, column) tuple.
     """
-    scores = [[0 for dummy_col in range(3)]
-                        for dummy_row in range(3)]
+    scores = [[0 for dummy_col in range(board.get_dim())]
+                        for dummy_row in range(board.get_dim())]
     curplayer = random.randint(PLAYERX, PLAYERO)
     for dummy_index in range(trials):
         board_tmp = board.clone()
@@ -243,4 +250,13 @@ def mc_move(board, player, trials):
     square = get_best_move(board, scores)
     return (square[0], square[1])
 
-play_game(mc_move, 500)
+#play_game(mc_move, 200)
+
+
+
+# Test game with the console or the GUI.
+# Uncomment whichever you prefer.
+# Both should be commented out when you submit for
+# testing to save time.
+
+# provided.play_game(mc_move, NTRIALS, False)        
