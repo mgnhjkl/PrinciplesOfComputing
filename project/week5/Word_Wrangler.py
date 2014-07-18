@@ -7,6 +7,8 @@ def remove_duplicates(list1):
 
 	This function can be iterative.
 	"""
+	if len(list1) == 0:
+		return list1
 	results = [list1[0]]
 	for item in list1:
 		if item != results[-1]:
@@ -40,14 +42,16 @@ def merge(list1, list2):
 	merged_list = []
 	index1 = 0
 	index2 = 0
-	list1.append(float("inf"))
-	list2.append(float("inf"))
-	while index1 != len(list1) - 1 or index2 != len(list2) - 1:
-		if list1[index1] <= list2[index2]:
-			merged_list.append(list1[index1])
+	list_tmp1 = list1[:]
+	list_tmp2 = list2[:]
+	list_tmp1.append(float("inf"))
+	list_tmp2.append(float("inf"))
+	while index1 != len(list_tmp1) - 1 or index2 != len(list_tmp2) - 1:
+		if list_tmp1[index1] <= list_tmp2[index2]:
+			merged_list.append(list_tmp1[index1])
 			index1 += 1
 		else:
-			merged_list.append(list2[index2])
+			merged_list.append(list_tmp2[index2])
 			index2 += 1
 	return merged_list
 
